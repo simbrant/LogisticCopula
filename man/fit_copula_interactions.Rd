@@ -16,6 +16,7 @@ fit_copula_interactions(
   maxit_final = 1000,
   maxit_intermediate = 50,
   verbose = FALSE,
+  adjust_intercept = TRUE,
   max_t = Inf,
   test_x = NULL,
   test_y = NULL,
@@ -65,6 +66,9 @@ parameters. Defaults to 10.}
 
 \item{verbose}{Whether information about the progress should be printed 
 to the console.}
+
+\item{adjust_intercept}{Whether to intermediately refit the intercept
+during the model/structure selection procedure. Defaults to true.}
 
 \item{max_t}{The maximum number of trees in the copula models. Defaults
 to Inf, i.e., no maximum.}

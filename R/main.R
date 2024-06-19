@@ -63,8 +63,8 @@ fit_copula_interactions <- function(
     y, x, xtype, family_set=c("gaussian", "clayton", "gumbel"), 
     oos_validation=FALSE, tau=2, which_include=NULL, reg.method="glm",
     maxit_final=1000, maxit_intermediate=50, verbose=FALSE, 
-    max_t=Inf, test_x=NULL, test_y=NULL, set_nonsig_zero=FALSE,
-    reltol=sqrt(.Machine$double.eps)
+    adjust_intercept=TRUE, max_t=Inf, test_x=NULL, test_y=NULL,
+    set_nonsig_zero=FALSE, reltol=sqrt(.Machine$double.eps)
     ) {
   ##' fit_copula_interactions
   ##' @name fit_copula_interactions
@@ -104,6 +104,8 @@ fit_copula_interactions <- function(
   ##' parameters. Defaults to 10.
   ##' @param verbose Whether information about the progress should be printed 
   ##' to the console.
+  ##' @param adjust_intercept Whether to intermediately refit the intercept
+  ##' during the model/structure selection procedure. Defaults to true. 
   ##' @param max_t The maximum number of trees in the copula models. Defaults
   ##' to Inf, i.e., no maximum.
   ##' @param test_x Part of the optional validation set,
@@ -278,10 +280,10 @@ fit_copula_interactions <- function(
 
       if (oos_validation) {
         cand_lik <- sum(
-          dbinom(test_y, 1, plogis(predict_md(m_cand, test_x)), TRUE)
+          dbinom(test_y, 1, plogis(predict(m_cand, test_x)), TRUE)
         )
         prev_lik <- sum(
-          dbinom(test_y, 1, plogis(predict_md(m_obj, test_x)), TRUE)
+          dbinom(test_y, 1, plogis(predict(m_obj, test_x)), TRUE)
         )
         crit <- cand_lik - prev_lik
       } else {
