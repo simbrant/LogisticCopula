@@ -1,0 +1,4 @@
+export(fit_copula_interactions)
+S3method(predict, logistic_copula)
+S3method(print, CondNode)
+S3method(print, Edge)
