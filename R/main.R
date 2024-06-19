@@ -58,11 +58,11 @@ predict.logistic_copula <- function(md, new_x) {
 }
 
 fit_copula_interactions <- function(
-    y, x, xtype, family_set=c("gaussian", "clayton", "gumbel"),
-    adjust_intercept=TRUE, oos_validation=FALSE, tau=2, which_include=NULL, 
-    reg.method="glm", maxit_final=1000, maxit_intermediate=50, verbose=FALSE,
+    y, x, xtype, family_set=c("gaussian", "clayton", "gumbel"), 
+    oos_validation=FALSE, tau=2, which_include=NULL, reg.method="glm",
+    maxit_final=1000, maxit_intermediate=50, verbose=FALSE, 
     max_t=Inf, test_x=NULL, test_y=NULL, set_nonsig_zero=FALSE,
-    reltol=sqrt(.Machine$double.eps), memo=FALSE
+    reltol=sqrt(.Machine$double.eps)
     ) {
   ##' fit_copula_interactions
   ##' @name fit_copula_interactions

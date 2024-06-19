@@ -462,7 +462,7 @@ beta_gradient <- function(y, x, fit, beta_0, betas, update = TRUE) {
     fit <- set_model(y, x, fit, beta = c(beta_0, betas))
   }
   eta <- fit$beta_0 + fit$beta_x_insample + fit$copula_eff_insample
-  p <- plogis(eta)
+  p <- stats::plogis(eta)
   ystar <- (y - p)
   
   sapply(seq(0, ncol(x)), function(k) {
