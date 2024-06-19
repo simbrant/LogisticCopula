@@ -261,8 +261,7 @@ fit_copula_interactions <- function(
       )
 
       if(length(m_cand_tmp) == 1) {
-        print("Error during fitting of model")
-        stop()
+        stop("Error during fitting of model")
       } else {
         m_cand <- m_cand_tmp
         rm(m_cand_tmp)
