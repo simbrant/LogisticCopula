@@ -4,10 +4,10 @@
 \alias{predict.logistic_copula}
 \title{predict.logistic_copula}
 \usage{
-\method{predict}{logistic_copula}(md, new_x)
+\method{predict}{logistic_copula}(object, new_x)
 }
 \arguments{
-\item{md}{The model object as returned by fit_copula_interactions}
+\item{object}{The model object as returned by fit_copula_interactions}
 
 \item{new_x}{A matrix of covariate values to compute predictions for.}
 }

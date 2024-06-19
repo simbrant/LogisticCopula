@@ -9,7 +9,6 @@ fit_copula_interactions(
   x,
   xtype,
   family_set = c("gaussian", "clayton", "gumbel"),
-  adjust_intercept = TRUE,
   oos_validation = FALSE,
   tau = 2,
   which_include = NULL,
@@ -21,8 +20,7 @@ fit_copula_interactions(
   test_x = NULL,
   test_y = NULL,
   set_nonsig_zero = FALSE,
-  reltol = sqrt(.Machine$double.eps),
-  memo = FALSE
+  reltol = sqrt(.Machine$double.eps)
 )
 }
 \arguments{

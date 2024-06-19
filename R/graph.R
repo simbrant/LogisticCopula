@@ -22,12 +22,14 @@ CondNode <- function(vertice, conditional = c()) {
   
 }
 
-print.CondNode <- function(node, ...) {
-  cat(paste0(cond_node_key(node), "\n"))
+print.CondNode <- function(x, ...) {
+  #' @export
+  cat(paste0(cond_node_key(x), "\n"))
 }
 
-print.Edge <- function(edge, ...) {
-  cat(paste0(cond_node_key(edge[[1]]), " - ", cond_node_key(edge[[2]]), "\n"))
+print.Edge <- function(x, ...) {
+  #' @export
+  cat(paste0(cond_node_key(x[[1]]), " - ", cond_node_key(x[[2]]), "\n"))
 }
 
 equal_nodes <- function(n1, n2) {
@@ -43,13 +45,14 @@ NodeList <- function(nodes) {
   nodes
 }
 
-print.NodeList <- function(nodes, all = FALSE) {
+print.NodeList <- function(x, all=FALSE) {
+  #' @export
   if (all) {
-    for (node in nodes){
+    for (node in x){
       print(node)
     }
   } else {
-    cat(paste0("NodeList contating ", length(nodes), " CondNode objects."))
+    cat(paste0("NodeList contating ", length(x), " CondNode objects."))
   }
 }
 
@@ -58,10 +61,6 @@ Edge <- function(n1, n2){
   class(edge) <- c("Edge", "NodeList")
   attr(edge, "call") <- sys.call()
   edge
-}
-
-print.Edge <- function(edge){
-  print(paste0(cond_node_key(edge[[1]]), " - ", cond_node_key(edge[[2]])))
 }
 
 edge_key <- function(edge) {

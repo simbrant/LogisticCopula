@@ -38,23 +38,25 @@ init_logistic_copula <- function(y, x, xtype, which_include, reg.method="glm",
   m_obj
 }
 
-predict.logistic_copula <- function(md, new_x) {
+predict.logistic_copula <- function(object, new_x) {
   ##' predict.logistic_copula
   ##' @name predict.logistic_copula
   ##' @aliases predict.logistic_copula
   ##' @description
   ##' Computes predicted probability of Y=1 for a logistic regression model with
   ##' a vine extension. 
-  ##' @param md The model object as returned by fit_copula_interactions
+  ##' @param object The model object as returned by fit_copula_interactions
   ##' @param new_x A matrix of covariate values to compute predictions for.
   new_u <- transform_margins_to_hash(
-    new_x, md$xtype, md$parameters, md$which_include
+    new_x, object$xtype, object$parameters, object$which_include
   )
-  md_copy <- md
-  md_copy <- set_transformed_vars(new_x, md_copy$which_include, md_copy)
-  cop_eff <- compute_g(md_copy)
+  object_copy <- object
+  object_copy <- set_transformed_vars(
+    new_x, object_copy$which_include, object_copy
+    )
+  cop_eff <- compute_g(object_copy)
 
-  plogis(cbind(1, new_x) %*% md$beta_vec + cop_eff)
+  plogis(cbind(1, new_x) %*% object$beta_vec + cop_eff)
 }
 
 fit_copula_interactions <- function(
