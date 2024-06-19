@@ -14,7 +14,7 @@ Author: Authors@R:
 Maintainer: Simon Boge Brant <simbrant91@gmail.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: MIT + file LICENSE
 Imports: mlbench (>= 2.1-5), VineCopula (>= 2.5.0), rvinecopulib (>= 0.6.3.1.1)
 Encoding: UTF-8
 LazyData: true
