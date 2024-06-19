@@ -10,6 +10,8 @@
 \item{object}{The model object as returned by fit_copula_interactions}
 
 \item{new_x}{A matrix of covariate values to compute predictions for.}
+
+\item{...}{Not used.}
 }
 \description{
 Computes predicted probability of Y=1 for a logistic regression model with

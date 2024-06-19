@@ -108,7 +108,7 @@ xtype <- apply(x, 2, function(x) if(length(unique(x)) > 2) "c_a" else "d")
 
 # Model with selection penalty tau=log(n)
 md <- LogisticCopula::fit_copula_interactions(
-  y, as.matrix(x), xtype, verbose=T, tau = 10)
+  y, as.matrix(x), xtype, verbose=T, tau = 10
 )
 # Model with selection penalty tau=Inf, returns just the logistic
 # regression model

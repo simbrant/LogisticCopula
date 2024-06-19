@@ -47,6 +47,7 @@ predict.logistic_copula <- function(object, new_x, ...) {
   ##' a vine extension. 
   ##' @param object The model object as returned by fit_copula_interactions
   ##' @param new_x A matrix of covariate values to compute predictions for.
+  ##' @param ... Not used.
   new_u <- transform_margins_to_hash(
     new_x, object$xtype, object$parameters, object$which_include
   )
@@ -133,7 +134,7 @@ fit_copula_interactions <- function(
   ##' 
   ##' # Model with selection penalty tau=log(n)
   ##' md <- LogisticCopula::fit_copula_interactions(
-  ##'   y, as.matrix(x), xtype, verbose=T, tau = 10)
+  ##'   y, as.matrix(x), xtype, verbose=T, tau = 10
   ##' )
   ##' # Model with selection penalty tau=Inf, returns just the logistic
   ##' # regression model
