@@ -4,7 +4,7 @@
 \alias{predict.logistic_copula}
 \title{predict.logistic_copula}
 \usage{
-\method{predict}{logistic_copula}(object, new_x)
+\method{predict}{logistic_copula}(object, new_x, ...)
 }
 \arguments{
 \item{object}{The model object as returned by fit_copula_interactions}

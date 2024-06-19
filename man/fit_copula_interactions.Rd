@@ -97,9 +97,8 @@ data("Ionosphere")
 
 dset <- Ionosphere[, -(1:2)] 
 
-set.seed(20)
-rowss <- sample(nrow(dset), round(nrow(dset) * 0.75))
-colss <- sample(ncol(dset) - 1, 5)
+rowss <- 1:100
+colss <- 1:5
 x <- as.matrix(dset[rowss, colss])
 xte <- as.matrix(dset[-rowss, colss])
 y <- dset[rowss, ncol(dset)] == "bad"
@@ -109,7 +108,7 @@ xtype <- apply(x, 2, function(x) if(length(unique(x)) > 2) "c_a" else "d")
 
 # Model with selection penalty tau=log(n)
 md <- LogisticCopula::fit_copula_interactions(
-  y, as.matrix(x), xtype, verbose=T, tau = log(nrow(x))
+  y, as.matrix(x), xtype, verbose=T, tau = 10)
 )
 # Model with selection penalty tau=Inf, returns just the logistic
 # regression model

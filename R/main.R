@@ -38,7 +38,7 @@ init_logistic_copula <- function(y, x, xtype, which_include, reg.method="glm",
   m_obj
 }
 
-predict.logistic_copula <- function(object, new_x) {
+predict.logistic_copula <- function(object, new_x, ...) {
   ##' predict.logistic_copula
   ##' @name predict.logistic_copula
   ##' @aliases predict.logistic_copula
@@ -122,9 +122,8 @@ fit_copula_interactions <- function(
   ##' 
   ##' dset <- Ionosphere[, -(1:2)] 
   ##' 
-  ##' set.seed(20)
-  ##' rowss <- sample(nrow(dset), round(nrow(dset) * 0.75))
-  ##' colss <- sample(ncol(dset) - 1, 5)
+  ##' rowss <- 1:100
+  ##' colss <- 1:5
   ##' x <- as.matrix(dset[rowss, colss])
   ##' xte <- as.matrix(dset[-rowss, colss])
   ##' y <- dset[rowss, ncol(dset)] == "bad"
@@ -134,7 +133,7 @@ fit_copula_interactions <- function(
   ##' 
   ##' # Model with selection penalty tau=log(n)
   ##' md <- LogisticCopula::fit_copula_interactions(
-  ##'   y, as.matrix(x), xtype, verbose=T, tau = log(nrow(x))
+  ##'   y, as.matrix(x), xtype, verbose=T, tau = 10)
   ##' )
   ##' # Model with selection penalty tau=Inf, returns just the logistic
   ##' # regression model
