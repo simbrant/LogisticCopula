@@ -100,11 +100,11 @@ rowss <- sample(length(y), round(length(y) * 0.5))
 xtype <- rep("c_a", ncol(x))
 
 md <- LogisticCopula::fit_copula_interactions(
-  y[rowss], x[rowss, ], xtype, verbose = T, tau=log(length(y[rowss])),
+  y[rowss], x[rowss, ], xtype, tau=log(length(y[rowss])),
   maxit_intermediate = 50, maxit_final = 50
 )
 md2 <- LogisticCopula::fit_copula_interactions(
-  y[rowss], x[rowss, ], xtype, verbose = T, tau=Inf
+  y[rowss], x[rowss, ], xtype, tau=Inf
 )
 
 plot(predict(md2, new_x = x[-rowss, ]),
