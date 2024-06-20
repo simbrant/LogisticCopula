@@ -92,21 +92,29 @@ of each covariate, selects and fits interaction terms in the form of two
 R-vine models with identical graphical structure, one for each class.
 }
 \examples{
-library(mclust)
-data("wdbc", package="mclust")
-y <- wdbc$Diagnosis == "M"
-x <- as.matrix(wdbc[, 3:11])
-rowss <- sample(length(y), round(length(y) * 0.5))
-xtype <- rep("c_a", ncol(x))
+data("Ionosphere", package="mlbench")
 
+dset <- Ionosphere[, -(1:2)] 
+
+set.seed(20)
+rowss <- sample(nrow(dset), round(nrow(dset) * 0.75))
+colss <- sample(ncol(dset) - 1, 5)
+x <- as.matrix(dset[rowss, colss])
+xte <- as.matrix(dset[-rowss, colss])
+y <- dset[rowss, ncol(dset)] == "bad"
+yte <- dset[-rowss, ncol(dset)] == "bad"
+
+xtype <- apply(x, 2, function(x) if(length(unique(x)) > 2) "c_a" else "d")
+
+# Model with selection penalty tau=log(n)
 md <- LogisticCopula::fit_copula_interactions(
-  y[rowss], x[rowss, ], xtype, tau=log(length(y[rowss])),
-  maxit_intermediate = 50, maxit_final = 50
+  y, as.matrix(x), xtype, tau = log(nrow(x))
 )
-md2 <- LogisticCopula::fit_copula_interactions(
-  y[rowss], x[rowss, ], xtype, tau=Inf
+# Model with selection penalty tau=Inf, returns just the logistic
+# regression model
+mdglm <- LogisticCopula::fit_copula_interactions(
+  y, as.matrix(x), xtype, tau = Inf
 )
 
-plot(predict(md2, new_x = x[-rowss, ]),
-     predict(md, new_x = x[-rowss, ]), col = y[-rowss] + 3)
+plot(predict(mdglm, xte), predict(md, xte), col = 3 + yte)
 }

@@ -5,37 +5,35 @@ coefs_to_pars <- function(y, x, xtype, beta_0, betas) {
   vars_x <- apply(x, 2, var)
 
   pars_pi_y <- function(pi_y) {
-    
+
     # Compute mu and sigma parameters
     sigma <- rep(NA, length(xtype))
     mu_0 <- rep(NA, length(xtype))
     mu_1 <- rep(NA, length(xtype))
-    
-    if (any (xtype == "c_a")){
+
+    if (any(xtype == "c_a")) {
 
       sigma[which(xtype == "c_a")] <- pmax(sapply(
         which(xtype == "c_a"), function(j) {
-          Q_j <- betas[j]**2 * pi_y * (1 - pi_y)
-          (sqrt(1 + 4 * Q_j * vars_x[j]) - 1) / (2 * Q_j)
-        }),1e-8)
+          q_j <- betas[j]**2 * pi_y * (1 - pi_y)
+          (sqrt(1 + 4 * q_j * vars_x[j]) - 1) / (2 * q_j)
+        }), 1e-8)
 
       mu_0[which(xtype == "c_a")] <- (
         (
           means_x[which(xtype == "c_a")] -
             (
-              betas[which(xtype == "c_a")] * 
-                sigma[which(xtype == "c_a")] * 
+              betas[which(xtype == "c_a")] *
+                sigma[which(xtype == "c_a")] *
                 pi_y
             )
         )
       )
-      
+
       mu_1[which(xtype == "c_a")] <- (
-        (
-          means_x[which(xtype == "c_a")] + (
-            betas[which(xtype == "c_a")] *
-              (1 - pi_y) *
-              sigma[which(xtype == "c_a")])
+        means_x[which(xtype == "c_a")] + (
+          betas[which(xtype == "c_a")] *
+            (1 - pi_y) * sigma[which(xtype == "c_a")]
         )
       )
     }
@@ -59,7 +57,7 @@ coefs_to_pars <- function(y, x, xtype, beta_0, betas) {
               nu_0_cands - betas[j]
             )
             marglik <- sapply(
-              1:length(roots), 
+              seq(length(roots)), 
               function(k) {
                 sum(log((1 - pi_y) * dexp(x[, j], nu_0_cands[k])
                         + pi_y * dexp(x[, j], nu_1_cands[k])))

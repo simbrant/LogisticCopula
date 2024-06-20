@@ -1,22 +1,29 @@
 
 init_logistic_copula <- function(y, x, xtype, which_include, reg.method="glm",
                                  set_nonsig_zero=FALSE) {
-  
+
   if (reg.method == "glm") {
     ft <- glm(y~x, family=binomial())
     if (set_nonsig_zero) {
       nonsig <- which(summary(ft)$coef[-1, 4] > .05)
       sig <- which(summary(ft)$coef[-1, 4] <= .05)
-      ft_n <- glm(y~x[, -nonsig])
+      ft_n <- glm(y~x[, -nonsig], family = "binomial")
       ft$coef[nonsig + 1] <- 0
       ft$coeg[c(1, 1 + sig)] <- coef(ft_n)
     }
-    
+  } else if (reg.method == "brglm2") {
+    ft <- glm(y~x, family="binomial", method = "brglmFit")
+    if (set_nonsig_zero) {
+      nonsig <- which(summary(ft)$coef[-1, 4] > .05)
+      sig <- which(summary(ft)$coef[-1, 4] <= .05)
+      ft_n <- glm(y~x[, -nonsig], family = "binomial", method = "brglmFit")
+      ft$coef[nonsig + 1] <- 0
+      ft$coeg[c(1, 1 + sig)] <- coef(ft_n)
+    }
   } else {
     stop(paste0("reg.method = ", reg.method, " not implemented!"))
   }
-  
-  
+
   prs <- coefs_to_pars(
     y, x, xtype, coef(ft)[1], coef(ft)[-1]
   )
@@ -37,6 +44,7 @@ init_logistic_copula <- function(y, x, xtype, which_include, reg.method="glm",
   
   m_obj
 }
+
 
 predict.logistic_copula <- function(object, new_x, ...) {
   ##' predict.logistic_copula
@@ -66,7 +74,7 @@ fit_copula_interactions <- function(
     maxit_final=1000, maxit_intermediate=50, verbose=FALSE, 
     adjust_intercept=TRUE, max_t=Inf, test_x=NULL, test_y=NULL,
     set_nonsig_zero=FALSE, reltol=sqrt(.Machine$double.eps)
-    ) {
+) {
   ##' fit_copula_interactions
   ##' @name fit_copula_interactions
   ##' @aliases fit_copula_interactions
@@ -118,23 +126,31 @@ fit_copula_interactions <- function(
   ##' @param reltol Relative convergence tolerance, see the documentation for 
   ##' \link[stats]{optim}.
   ##' @examples 
-  ##' library(mclust)
-  ##' data("wdbc", package="mclust")
-  ##' y <- wdbc$Diagnosis == "M"
-  ##' x <- as.matrix(wdbc[, 3:11])
-  ##' rowss <- sample(length(y), round(length(y) * 0.5))
-  ##' xtype <- rep("c_a", ncol(x))
+  ##' data("Ionosphere", package="mlbench")
   ##' 
+  ##' dset <- Ionosphere[, -(1:2)] 
+  ##' 
+  ##' set.seed(20)
+  ##' rowss <- sample(nrow(dset), round(nrow(dset) * 0.75))
+  ##' colss <- sample(ncol(dset) - 1, 5)
+  ##' x <- as.matrix(dset[rowss, colss])
+  ##' xte <- as.matrix(dset[-rowss, colss])
+  ##' y <- dset[rowss, ncol(dset)] == "bad"
+  ##' yte <- dset[-rowss, ncol(dset)] == "bad"
+  ##' 
+  ##' xtype <- apply(x, 2, function(x) if(length(unique(x)) > 2) "c_a" else "d")
+  ##' 
+  ##' # Model with selection penalty tau=log(n)
   ##' md <- LogisticCopula::fit_copula_interactions(
-  ##'   y[rowss], x[rowss, ], xtype, tau=log(length(y[rowss])),
-  ##'   maxit_intermediate = 50, maxit_final = 50
+  ##'   y, as.matrix(x), xtype, tau = log(nrow(x))
   ##' )
-  ##' md2 <- LogisticCopula::fit_copula_interactions(
-  ##'   y[rowss], x[rowss, ], xtype, tau=Inf
+  ##' # Model with selection penalty tau=Inf, returns just the logistic
+  ##' # regression model
+  ##' mdglm <- LogisticCopula::fit_copula_interactions(
+  ##'   y, as.matrix(x), xtype, tau = Inf
   ##' )
-  ##' 
-  ##' plot(predict(md2, new_x = x[-rowss, ]),
-  ##'      predict(md, new_x = x[-rowss, ]), col = y[-rowss] + 3)
+  ##'
+  ##'plot(predict(mdglm, xte), predict(md, xte), col = 3 + yte)
   ##' @export
   
   if (is.null(which_include)) {
@@ -143,11 +159,11 @@ fit_copula_interactions <- function(
     if(any((xtype[which_include] != "c_a") & (xtype[which_include] != "c_p"))) {
       ind <- which(
         (xtype[which_include] != "c_a") & (xtype[which_include] != "c_p")
-        )
+      )
       which_include <- which_include[-ind] 
     }
   }
-
+  
   if (length(family_set) > 1) {
     family_combs <- cbind(
       combn(family_set, 2),
@@ -158,15 +174,15 @@ fit_copula_interactions <- function(
   } else{
     family_combs <- matrix(rep(family_set, 2), ncol=1)
   }
-
+  
   if (oos_validation & (is.null(test_x) | is.null(test_y))) {
     stop("Must supply test_x and test_y for cdevriterion = 'OOS validation'!")
   }
-
+  
   m_obj <- init_logistic_copula(y, x, xtype, which_include, 
                                 reg.method=reg.method,
                                 set_nonsig_zero=set_nonsig_zero)
-
+  
   for (t in seq(min(length(which_include) - 1, max_t))) {
     # Find all valid edges
     valid_edges <- all_initially_valid_edges(
@@ -196,7 +212,7 @@ fit_copula_interactions <- function(
           get(edge_key(valid_edges$edges[[j]]), envir=copula_pairs)
         )
       )
-
+      
       # Find the best edge, whether it improves the model or not
       j_star <- choose_best_effect(
         y, m_obj$beta_0 + m_obj$beta_x + m_obj$copula_eff_insample,
@@ -213,7 +229,7 @@ fit_copula_interactions <- function(
         1:ncol(family_combs),
         function(l) fit_pair(best_edge, m_obj$u, y, xtype, family_combs[, l])
       )
-
+      
       # Compute the copula effects for each combination
       pair_effects_family_comb <- sapply(
         1:ncol(family_combs),
@@ -221,16 +237,16 @@ fit_copula_interactions <- function(
           best_edge, m_obj$u, copula_pairs_family_comb[[l]]
         )
       )
-
+      
       # Find the best such combination, if there is one that improves the model
       l_star <- choose_best_effect(
         y, m_obj$beta_0 + m_obj$beta_x + m_obj$copula_eff_insample,
         pair_effects_family_comb, adjust_intercept=adjust_intercept
       )
-
+      
       # Is there a combination that improves the model?¨
       m_cand <- m_obj
-
+      
       # Add the edge to the tree
       m_cand$trees[[t]] <- add_edge_to_tree(
         m_cand$trees[[t]], valid_edges$edges[[j_star]]
@@ -242,16 +258,16 @@ fit_copula_interactions <- function(
       m_cand$trees[[t]] <- add_pair_copulas_to_tree(
         m_cand$trees[[t]], copula_pairs_family_comb[[l_star]]
       )
-
+      
       # Refit 
       m_cand_tmp <- try(
         fit_model(
-            y, x, m_cand, maxit=min(maxit_final, maxit_intermediate),
-            num_grad=FALSE, verbose=verbose, reltol=reltol
+          y, x, m_cand, maxit=min(maxit_final, maxit_intermediate),
+          num_grad=FALSE, verbose=verbose, reltol=reltol
         ),
         silent=TRUE
       )
-
+      
       if(length(m_cand_tmp) == 1) {
         print(m_cand_tmp)
         stop("Error during fitting of model")
@@ -259,17 +275,17 @@ fit_copula_interactions <- function(
         m_cand <- m_cand_tmp
         rm(m_cand_tmp)
       }
-
+      
       cand_lik <- full_likelihood(
         y, x, m_cand, m_cand$beta_0, m_cand$beta_vec[-1],
         transformed_delta_vec(m_cand)
       )
-
+      
       prev_lik <- full_likelihood(
         y, x, m_obj, m_obj$beta_0, m_obj$beta_vec[-1],
         transformed_delta_vec(m_obj)
       )
-
+      
       if (oos_validation) {
         cand_lik <- sum(
           dbinom(test_y, 1, plogis(predict(m_cand, test_x)), TRUE)
@@ -285,7 +301,7 @@ fit_copula_interactions <- function(
           crit <- Inf
         }
       }
-
+      
       if (crit > 0) {
         m_obj <- m_cand
         valid_edges$edges <- valid_edges$edges[-j_star]
@@ -331,11 +347,11 @@ fit_copula_interactions <- function(
     k <- k + 1
     rm(copula_pairs)
   }
-
+  
   if (length(m_obj$trees[[length(m_obj$trees)]]$edges) == 0) {
     m_obj$trees <- m_obj$trees[1:(length(m_obj$trees) - 1)]
   }
-
+  
   # Refit one last time
   if(maxit_final > 50) {
     if(length(m_obj$trees[[1]]$edges) > 0) {
@@ -355,12 +371,12 @@ fit_copula_interactions <- function(
       }
     }
   }
-
+  
   final_lik <- full_likelihood(
     y, x, m_obj, m_obj$beta_0, m_obj$beta_vec[-1],
     transformed_delta_vec(m_obj)
   )
-
+  
   rm(valid_edges)
   m_obj
 }
