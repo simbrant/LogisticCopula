@@ -382,9 +382,28 @@ fit_copula_interactions <- function(
 }
 
 
-fit_model <- function(y, x, m_obj, maxit=5, num_grad=FALSE,
-                      verbose=FALSE, hessian=FALSE, reltol=sqrt(.Machine$double.eps)) {
-  
+fit_model <- function(y, x, m_obj, maxit=5, num_grad=FALSE, verbose=FALSE,
+                      hessian=FALSE, reltol=sqrt(.Machine$double.eps)) {
+
+  ##' fit_model
+  ##' @name fit_model
+  ##' @aliases fit_model
+  ##' @description This function updates the parameters of a LogisticCopula 
+  ##' model by maximum likelihood.
+  ##' @param y A vector of n observations of the (univariate) binary outcome
+  ##' variable y
+  ##' @param x A (n x p) matrix of n observations of p covariates
+  ##' @param m_obj The model object as returned from fit_copula_interactions
+  ##' @param xtype A vector of p characters that have to take the value
+  ##' @param maxit The maximum number of gradient steps
+  ##' @param num_grd Whether to compute gradients numerically.
+  ##' @param verbose Whether information about the progress should be printed 
+  ##' to the console.
+  ##' @param hessian Whether to numerically compute the hessian matrix, see the
+  ##' documentation for \link[stats]{optim}. 
+  ##' @param reltol Relative convergence tolerance, see the documentation for 
+  ##' \link[stats]{optim}.
+
   # Extract parameters :
   t_delta <- transformed_delta_vec(m_obj)
 
