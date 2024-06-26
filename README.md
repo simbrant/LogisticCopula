@@ -1,3 +1,5 @@
+# LogisticCopula
+ 
  An implementation of a method of extending a logistic regression
     model beyond linear effects of the covariates. The extension in is
     constructed by first equating the logistic regression model to a naive Bayes
