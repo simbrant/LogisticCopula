@@ -25,6 +25,8 @@ variable y}
 
 \item{maxit}{The maximum number of gradient steps}
 
+\item{num_grad}{Whether to compute gradients numerically.}
+
 \item{verbose}{Whether information about the progress should be printed 
 to the console.}
 
@@ -33,10 +35,12 @@ documentation for \link[stats]{optim}.}
 
 \item{reltol}{Relative convergence tolerance, see the documentation for 
 \link[stats]{optim}.}
-
-\item{xtype}{A vector of p characters that have to take the value}
-
-\item{num_grd}{Whether to compute gradients numerically.}
+}
+\value{
+A logistic_copula object, which contains the regression 
+coefficients of the model, the parameters of the chosen conditional
+covariate distribution that corresponds to the regression coefficients,
+and the pair of vine-models that extend the logistic regression model.
 }
 \description{
 This function updates the parameters of a LogisticCopula 

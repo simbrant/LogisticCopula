@@ -45,7 +45,7 @@ NodeList <- function(nodes) {
   nodes
 }
 
-print.NodeList <- function(x, all=FALSE) {
+print.NodeList <- function(x, all=FALSE, ...) {
   #' @export
   if (all) {
     for (node in x){

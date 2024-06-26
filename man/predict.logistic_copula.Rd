@@ -13,6 +13,10 @@
 
 \item{...}{Not used.}
 }
+\value{
+A numeric vector of estimates of the conditional probability
+of Y=1 | x, computed for each row of new_x.
+}
 \description{
 Computes predicted probability of Y=1 for a logistic regression model with
 a vine extension.

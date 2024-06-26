@@ -56,6 +56,8 @@ predict.logistic_copula <- function(object, new_x, ...) {
   ##' @param object The model object as returned by fit_copula_interactions
   ##' @param new_x A matrix of covariate values to compute predictions for.
   ##' @param ... Not used.
+  ##' @return A numeric vector of estimates of the conditional probability
+  ##' of Y=1 | x, computed for each row of new_x.
   new_u <- transform_margins_to_hash(
     new_x, object$xtype, object$parameters, object$which_include
   )
@@ -125,8 +127,12 @@ fit_copula_interactions <- function(
   ##' (in the initial glm model) will be set to zero 
   ##' @param reltol Relative convergence tolerance, see the documentation for 
   ##' \link[stats]{optim}.
-  ##' @examples 
-  ##' data("Ionosphere", package="mlbench")
+  ##' @return A logistic_copula object, which contains the regression 
+  ##' coefficients of the model, the parameters of the chosen conditional
+  ##' covariate distribution that corresponds to the regression coefficients,
+  ##' and the pair of vine-models that extend the logistic regression model.
+  ##' @examples
+  ##' data("Ionosphere")
   ##' 
   ##' dset <- Ionosphere[, -(1:2)] 
   ##' 
@@ -269,7 +275,6 @@ fit_copula_interactions <- function(
       )
       
       if(length(m_cand_tmp) == 1) {
-        print(m_cand_tmp)
         stop("Error during fitting of model")
       } else {
         m_cand <- m_cand_tmp
@@ -363,8 +368,7 @@ fit_copula_interactions <- function(
         silent=TRUE
       )
       if(length(m_obj_tmp) == 1) {
-        print("Error during fitting of model")
-        stop()
+        stop("Error during fitting of model")
       } else {
         m_obj <- m_obj_tmp
         rm(m_obj_tmp)
@@ -394,16 +398,18 @@ fit_model <- function(y, x, m_obj, maxit=5, num_grad=FALSE, verbose=FALSE,
   ##' variable y
   ##' @param x A (n x p) matrix of n observations of p covariates
   ##' @param m_obj The model object as returned from fit_copula_interactions
-  ##' @param xtype A vector of p characters that have to take the value
   ##' @param maxit The maximum number of gradient steps
-  ##' @param num_grd Whether to compute gradients numerically.
+  ##' @param num_grad Whether to compute gradients numerically.
   ##' @param verbose Whether information about the progress should be printed 
   ##' to the console.
   ##' @param hessian Whether to numerically compute the hessian matrix, see the
   ##' documentation for \link[stats]{optim}. 
   ##' @param reltol Relative convergence tolerance, see the documentation for 
   ##' \link[stats]{optim}.
-
+  ##' @return A logistic_copula object, which contains the regression 
+  ##' coefficients of the model, the parameters of the chosen conditional
+  ##' covariate distribution that corresponds to the regression coefficients,
+  ##' and the pair of vine-models that extend the logistic regression model.
   # Extract parameters :
   t_delta <- transformed_delta_vec(m_obj)
 

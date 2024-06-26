@@ -85,6 +85,12 @@ see @oos_validation.}
 \item{reltol}{Relative convergence tolerance, see the documentation for 
 \link[stats]{optim}.}
 }
+\value{
+A logistic_copula object, which contains the regression 
+coefficients of the model, the parameters of the chosen conditional
+covariate distribution that corresponds to the regression coefficients,
+and the pair of vine-models that extend the logistic regression model.
+}
 \description{
 This is the main function of the package, which
 starting from an initial logistic regression model with only main effects
@@ -92,7 +98,7 @@ of each covariate, selects and fits interaction terms in the form of two
 R-vine models with identical graphical structure, one for each class.
 }
 \examples{
-data("Ionosphere", package="mlbench")
+data("Ionosphere")
 
 dset <- Ionosphere[, -(1:2)] 
 

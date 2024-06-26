@@ -6,3 +6,4 @@ importFrom("stats", "binomial", "coef", "dbinom", "dexp", "dnorm",
                "dpois", "glm", "nlm", "optim", "pbinom", "pexp", "plogis",
                "pnorm", "ppois", "predict", "qlogis", "var")
 importFrom("utils", "combn")
+importFrom("brglm2", "brglmFit")
