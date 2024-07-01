@@ -1,5 +1,8 @@
 # LogisticCopula
- 
+
+ [![](https://cranlogs.r-pkg.org/badges/grand-total/LogisticCopula)](https://cran.r-project.org/web/packages/LogisticCopula/index.html)
+[![](https://cranlogs.r-pkg.org/badges/last-month/LogisticCopula)](https://cran.r-project.org/web/packages/LogisticCopula/index.html)
+
  An implementation of a method of extending a logistic regression
     model beyond linear effects of the covariates. The extension in is
     constructed by first equating the logistic regression model to a naive Bayes
